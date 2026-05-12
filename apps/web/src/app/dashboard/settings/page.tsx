@@ -4,6 +4,7 @@ import { inboundAddressForAlias } from '@/lib/email';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CopyButton } from '@/components/dashboard/copy-button';
 import { ExportCard } from '@/components/dashboard/export-card';
+import { ByoOpenAiCard } from '@/components/dashboard/byo-openai-card';
 
 export const metadata = { title: 'Settings' };
 
@@ -11,10 +12,11 @@ export default async function SettingsPage() {
   const user = await ensureUser();
   const me = await prisma.user.findUniqueOrThrow({
     where: { id: user.id },
-    select: { email: true, forwardingAlias: true },
+    select: { email: true, forwardingAlias: true, byoOpenAiKey: true },
   });
 
   const inboundAddress = inboundAddressForAlias(me.forwardingAlias);
+  const hasOpenAiKey = Boolean(me.byoOpenAiKey);
 
   return (
     <div className="space-y-6">
@@ -80,6 +82,8 @@ export default async function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      <ByoOpenAiCard hasKey={hasOpenAiKey} />
 
       <ExportCard />
     </div>
