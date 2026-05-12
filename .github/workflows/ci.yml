@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_ci
+          CLERK_SECRET_KEY: sk_test_ci
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+          DIRECT_URL: postgresql://postgres:postgres@localhost:5432/postgres
+          OPENAI_API_KEY: sk-ci
+          INNGEST_EVENT_KEY: ci
+          INNGEST_SIGNING_KEY: ci
+          RESEND_API_KEY: ci
+          RESEND_INBOUND_SECRET: ci
+          ENCRYPTION_KEY: ci-encryption-key-32-bytes-long!

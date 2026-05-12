@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest an idea or enhancement.
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What user problem are you trying to solve?
+      placeholder: As a student applying to internships, I want ...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
