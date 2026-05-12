@@ -2,11 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "types": ["chrome", "vite/client"],
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "vite.config.ts", "manifest.config.ts"]
+  "include": ["src/**/*", "vite.config.ts", "manifest.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }
