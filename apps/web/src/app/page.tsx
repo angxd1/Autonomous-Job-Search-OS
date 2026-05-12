@@ -112,6 +112,8 @@ export default function Home() {
             <Link href="https://github.com/applypulse/applypulse" target="_blank" rel="noreferrer">
               GitHub
             </Link>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
             <Link href="/sign-in">Sign in</Link>
           </div>
         </div>
