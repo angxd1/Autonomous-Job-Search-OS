@@ -1,0 +1,153 @@
+// ApplyPulse Prisma schema
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// -------- Enums --------
+
+enum ApplicationStatus {
+  INTERESTED
+  APPLIED
+  OA
+  INTERVIEW
+  OFFER
+  REJECTED
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+  CONTRACT
+  TEMPORARY
+  OTHER
+}
+
+enum StatusEventSource {
+  MANUAL
+  EXTENSION
+  EMAIL
+  AI
+}
+
+enum EmailClassification {
+  APPLIED_CONFIRMATION
+  OA
+  INTERVIEW
+  REJECTION
+  OFFER
+  FOLLOW_UP
+  OTHER
+}
+
+// -------- Models --------
+
+model User {
+  id              String   @id // Clerk user id (e.g. "user_abc")
+  email           String   @unique
+  forwardingAlias String   @unique @default(cuid()) // local-part of u_<alias>@track.applypulse.app
+  byoOpenAiKey    String? // encrypted with ENCRYPTION_KEY
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  applications   Application[]
+  resumeVersions ResumeVersion[]
+  emails         EmailMessage[]
+  insights       AiInsight[]
+}
+
+model Application {
+  id                String            @id @default(cuid())
+  userId            String
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company           String
+  role              String
+  location          String?
+  salary            String?
+  jobUrl            String?
+  source            String? // "linkedin", "indeed", "greenhouse", "lever", "workday", etc.
+  employmentType    EmploymentType?
+  status            ApplicationStatus @default(APPLIED)
+  appliedAt         DateTime?
+  rawJobDescription String?
+  keywords          String[]          @default([])
+  notes             String?
+  resumeVersionId   String?
+  resumeVersion     ResumeVersion?    @relation(fields: [resumeVersionId], references: [id], onDelete: SetNull)
+
+  statusEvents StatusEvent[]
+  emails       EmailMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, appliedAt])
+  @@index([userId, company])
+}
+
+model ResumeVersion {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String
+  fileUrl   String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  applications Application[]
+
+  @@index([userId])
+}
+
+model StatusEvent {
+  id            String             @id @default(cuid())
+  applicationId String
+  application   Application        @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  fromStatus    ApplicationStatus?
+  toStatus      ApplicationStatus
+  source        StatusEventSource
+  occurredAt    DateTime           @default(now())
+  evidence      Json? // free-form: email id, AI confidence, etc.
+
+  @@index([applicationId, occurredAt])
+}
+
+model EmailMessage {
+  id             String               @id @default(cuid())
+  userId         String
+  user           User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applicationId  String?
+  application    Application?         @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  externalId     String?              @unique // Resend message id, for dedupe
+  fromAddress    String
+  toAddress      String
+  subject        String
+  body           String
+  classifiedAs   EmailClassification?
+  classifierMeta Json?
+  receivedAt     DateTime             @default(now())
+  processedAt    DateTime?
+
+  @@index([userId, receivedAt])
+  @@index([userId, classifiedAs])
+}
+
+model AiInsight {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  insights    String[] @default([])
+  generatedAt DateTime @default(now())
+
+  @@index([userId, generatedAt])
+}
