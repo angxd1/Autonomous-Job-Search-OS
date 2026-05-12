@@ -84,23 +84,30 @@ The web app boots on http://localhost:3000. To load the extension, run `pnpm --f
 
 ### Deploy your own
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/applypulse/applypulse)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fapplypulse%2Fapplypulse&project-name=applypulse&root-directory=apps%2Fweb&env=DATABASE_URL%2CDIRECT_URL%2CSUPABASE_URL%2CSUPABASE_SERVICE_ROLE_KEY%2CNEXT_PUBLIC_CLERK_PUBLISHABLE_KEY%2CCLERK_SECRET_KEY%2CCLERK_WEBHOOK_SECRET%2COPENAI_API_KEY%2CINNGEST_EVENT_KEY%2CINNGEST_SIGNING_KEY%2CRESEND_API_KEY%2CRESEND_INBOUND_SECRET%2CINBOUND_DOMAIN%2CENCRYPTION_KEY)
 
 Full self-host guide: [`docs/self-host.md`](docs/self-host.md).
 
+## Documentation
+
+- [Self-host guide](docs/self-host.md) — provision every dependency in 30 minutes
+- [Architecture](docs/architecture.md) — system map and request flows
+- [Roadmap](docs/roadmap.md) — what's shipped and what's next
+- [Good first issues](docs/good-first-issues.md) — afternoon-sized tasks to contribute
+
 ## Roadmap
 
-See [GitHub Projects](https://github.com/applypulse/applypulse/projects) for live status.
+See [`docs/roadmap.md`](docs/roadmap.md) for the full plan. Shipped through v0.4:
 
-- **Phase 1 (MVP):** Auth, dashboard, table view, extension, AI extraction
-- **Phase 2:** Email intelligence (Resend Inbound + Inngest), Kanban + Calendar, follow-up cron
-- **Phase 3:** Analytics + AI insights
-- **Phase 4:** Resume tracking, exports, BYO-OpenAI-key, polish
-- **Phase 5:** Open-source launch — Chrome Web Store, hosted applypulse.app, docs
+- **v0.1 Foundation** — auth, schema, dashboard table, monorepo
+- **v0.2 Capture** — REST API, Chrome MV3 extension, AI extraction
+- **v0.3 Intelligence** — Resend Inbound, Inngest email pipeline, Kanban + Calendar, follow-up cron
+- **v0.4 Insight** — analytics, daily AI insights, resume tracking, exports, BYO key
+- **v1.0 Launch** — applypulse.app prod, Chrome Web Store, community
 
 ## Contributing
 
-We love contributions, especially from students. Look for issues labeled `good first issue`. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a PR.
+We love contributions, especially from students. Browse [Good first issues](docs/good-first-issues.md) for afternoon-sized tasks. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a PR.
 
 ## License
 
