@@ -3,6 +3,7 @@ import { ensureUser } from '@/lib/auth';
 import { inboundAddressForAlias } from '@/lib/email';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CopyButton } from '@/components/dashboard/copy-button';
+import { ExportCard } from '@/components/dashboard/export-card';
 
 export const metadata = { title: 'Settings' };
 
@@ -79,6 +80,8 @@ export default async function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      <ExportCard />
     </div>
   );
 }
