@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart3, Calendar, KanbanSquare, Settings, Table2 } from 'lucide-react';
+import { BarChart3, Calendar, FileText, KanbanSquare, Settings, Table2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const items = [
@@ -10,6 +10,7 @@ const items = [
   { href: '/dashboard/kanban', label: 'Kanban', icon: KanbanSquare },
   { href: '/dashboard/calendar', label: 'Calendar', icon: Calendar },
   { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
+  { href: '/dashboard/resumes', label: 'Resumes', icon: FileText },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
 

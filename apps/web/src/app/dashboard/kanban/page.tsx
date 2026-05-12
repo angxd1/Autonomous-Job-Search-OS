@@ -8,20 +8,27 @@ export const metadata = { title: 'Kanban' };
 
 export default async function KanbanPage() {
   const user = await ensureUser();
-  const apps = await prisma.application.findMany({
-    where: { userId: user.id },
-    orderBy: { updatedAt: 'desc' },
-    select: {
-      id: true,
-      company: true,
-      role: true,
-      status: true,
-      source: true,
-      jobUrl: true,
-      appliedAt: true,
-      updatedAt: true,
-    },
-  });
+  const [apps, resumes] = await Promise.all([
+    prisma.application.findMany({
+      where: { userId: user.id },
+      orderBy: { updatedAt: 'desc' },
+      select: {
+        id: true,
+        company: true,
+        role: true,
+        status: true,
+        source: true,
+        jobUrl: true,
+        appliedAt: true,
+        updatedAt: true,
+      },
+    }),
+    prisma.resumeVersion.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true, label: true },
+    }),
+  ]);
 
   const cards: KanbanCard[] = apps;
 
@@ -34,7 +41,7 @@ export default async function KanbanPage() {
             Drag cards between columns to update their status.
           </p>
         </div>
-        <AddApplicationDialog />
+        <AddApplicationDialog resumes={resumes} />
       </div>
       <KanbanBoard cards={cards} />
     </div>

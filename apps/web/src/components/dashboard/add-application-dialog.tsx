@@ -33,7 +33,9 @@ import {
 } from '@/components/ui/select';
 import { createApplicationAction } from '@/app/dashboard/actions';
 
-export function AddApplicationDialog() {
+export type ResumeOption = { id: string; label: string };
+
+export function AddApplicationDialog({ resumes }: { resumes?: ResumeOption[] }) {
   const [open, setOpen] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
 
@@ -48,10 +50,12 @@ export function AddApplicationDialog() {
       source: '',
       status: 'APPLIED',
       notes: '',
+      resumeVersionId: null,
     },
   });
 
   const status = form.watch('status');
+  const resumeVersionId = form.watch('resumeVersionId');
 
   const onSubmit = form.handleSubmit(async (values) => {
     setSubmitting(true);
@@ -139,6 +143,29 @@ export function AddApplicationDialog() {
             <Label htmlFor="jobUrl">Job URL</Label>
             <Input id="jobUrl" placeholder="https://..." {...form.register('jobUrl')} />
           </div>
+          {resumes && resumes.length > 0 && (
+            <div className="grid gap-1.5">
+              <Label htmlFor="resumeVersionId">Resume</Label>
+              <Select
+                value={resumeVersionId ?? '__none__'}
+                onValueChange={(v) =>
+                  form.setValue('resumeVersionId', v === '__none__' ? null : v)
+                }
+              >
+                <SelectTrigger id="resumeVersionId">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">None</SelectItem>
+                  {resumes.map((r) => (
+                    <SelectItem key={r.id} value={r.id}>
+                      {r.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="grid gap-1.5">
             <Label htmlFor="notes">Notes</Label>
             <Textarea

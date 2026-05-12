@@ -11,11 +11,18 @@ export const dynamic = 'force-dynamic';
 export default async function DashboardPage() {
   const user = await ensureUser();
 
-  const applications = await prisma.application.findMany({
-    where: { userId: user.id },
-    orderBy: { updatedAt: 'desc' },
-    include: { resumeVersion: { select: { label: true } } },
-  });
+  const [applications, resumes] = await Promise.all([
+    prisma.application.findMany({
+      where: { userId: user.id },
+      orderBy: { updatedAt: 'desc' },
+      include: { resumeVersion: { select: { label: true } } },
+    }),
+    prisma.resumeVersion.findMany({
+      where: { userId: user.id },
+      orderBy: { createdAt: 'desc' },
+      select: { id: true, label: true },
+    }),
+  ]);
 
   const rows: ApplicationRow[] = applications.map((a) => ({
     id: a.id,
@@ -41,7 +48,7 @@ export default async function DashboardPage() {
               : `${rows.length} application${rows.length === 1 ? '' : 's'} tracked.`}
           </p>
         </div>
-        <AddApplicationDialog />
+        <AddApplicationDialog resumes={resumes} />
       </div>
       <ApplicationsTable rows={rows} />
     </div>
