@@ -46,6 +46,16 @@ export type ApplicationCreate = z.infer<typeof applicationCreateSchema>;
 export const applicationUpdateSchema = applicationCreateSchema.partial();
 export type ApplicationUpdate = z.infer<typeof applicationUpdateSchema>;
 
+export const aiInsightsSchema = z.object({
+  insights: z
+    .array(z.string().min(1).max(180))
+    .min(1)
+    .max(3)
+    .describe('Up to 3 short, actionable insights derived from the user metrics.'),
+});
+
+export type AiInsights = z.infer<typeof aiInsightsSchema>;
+
 export const emailClassificationSchema = z.object({
   classification: z.enum(EMAIL_CLASSIFICATIONS),
   company: z

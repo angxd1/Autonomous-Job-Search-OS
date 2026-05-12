@@ -1,6 +1,8 @@
 import { ensureUser } from '@/lib/auth';
 import { computeMetrics } from '@/lib/analytics';
+import { getOrGenerateInsights } from '@/lib/insights';
 import { MetricTile } from '@/components/dashboard/metric-tile';
+import { InsightsCard } from '@/components/dashboard/insights-card';
 import {
   ApplicationsOverTimeChart,
   DayOfWeekChart,
@@ -24,7 +26,10 @@ const pct = (v: number) => `${Math.round(v * 1000) / 10}%`;
 
 export default async function AnalyticsPage() {
   const user = await ensureUser();
-  const m = await computeMetrics(user.id);
+  const [m, insights] = await Promise.all([
+    computeMetrics(user.id),
+    getOrGenerateInsights(user.id),
+  ]);
 
   if (m.totals.applications === 0) {
     return (
@@ -51,6 +56,12 @@ export default async function AnalyticsPage() {
           What's working, what's not, and where to focus next.
         </p>
       </div>
+
+      <InsightsCard
+        insights={insights.insights}
+        generatedAt={insights.generatedAt}
+        source={insights.source}
+      />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <MetricTile label="Applications" value={m.totals.applications} />
