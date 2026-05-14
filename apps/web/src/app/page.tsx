@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { Show, SignInButton, SignUpButton } from '@clerk/nextjs';
 import { ArrowRight, BarChart3, Inbox, Mail, Sparkles, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,21 +25,25 @@ export default function Home() {
           >
             GitHub
           </Link>
-          <SignedOut>
-            <Button asChild size="sm" variant="outline">
-              <Link href="/sign-in">Sign in</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href="/sign-up">Get started</Link>
-            </Button>
-          </SignedOut>
-          <SignedIn>
+          <Show when="signed-out">
+            <div className="flex items-center gap-2">
+              <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
+                <Button size="sm" variant="outline">
+                  Sign in
+                </Button>
+              </SignInButton>
+              <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
+                <Button size="sm">Get started</Button>
+              </SignUpButton>
+            </div>
+          </Show>
+          <Show when="signed-in">
             <Button asChild size="sm">
               <Link href="/dashboard">
                 Open dashboard <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
-          </SignedIn>
+          </Show>
         </nav>
       </header>
 
@@ -59,20 +63,20 @@ export default function Home() {
             update itself. Learn what is actually working. Built for students, by a student.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <SignedOut>
-              <Button asChild size="lg">
-                <Link href="/sign-up">
+            <Show when="signed-out">
+              <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
+                <Button size="lg">
                   Start tracking free <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
-            </SignedOut>
-            <SignedIn>
+                </Button>
+              </SignUpButton>
+            </Show>
+            <Show when="signed-in">
               <Button asChild size="lg">
                 <Link href="/dashboard">
                   Open dashboard <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
-            </SignedIn>
+            </Show>
             <Button asChild size="lg" variant="outline">
               <Link href="https://github.com/applypulse/applypulse" target="_blank" rel="noreferrer">
                 Star on GitHub

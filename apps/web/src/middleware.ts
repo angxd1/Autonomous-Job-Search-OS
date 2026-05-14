@@ -27,5 +27,7 @@ export const config = {
     // Skip Next.js internals and static files
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
     '/(api|trpc)(.*)',
+    // Clerk frontend API routes (Next.js ≤15 uses middleware.ts; same matcher as Clerk docs)
+    '/__clerk/(.*)',
   ],
 };
